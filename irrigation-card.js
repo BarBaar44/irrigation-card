@@ -18,7 +18,7 @@
 // Everything sits in one block so the top-level names cannot clash with the
 // sister cards when the files are loaded as classic scripts.
 {
-const VERSION = "0.1.0";
+const VERSION = "0.1.1";
 
 const IR_HOLD_MS = 500;
 const IR_MOVE_PX = 8;
@@ -715,12 +715,15 @@ class IrrigationCard extends HTMLElement {
     }
     const timerRunning = ts === "active" || ts === "paused";
 
-    const shortage = irKey(this._s("valve_status") && this._s("valve_status").state) === "water_shortage";
+    // The valve keeps reporting water_shortage until its next run. Only warn when it matters:
+    // while watering (or the timer runs) or while the season is on; out of season it is old news.
+    const shortageRaw = irKey(this._s("valve_status") && this._s("valve_status").state) === "water_shortage";
     const moisture = en.moisture ? this._n("moisture") : null;
     const target = en.target ? this._value("target") : null;
     const runTime = en.run_time ? this._value("run_time") : null;
     const seasonKnown = !!en.automation && this._ok("automation");
     const season = seasonKnown ? this._on("automation") : null;
+    const shortage = shortageRaw && (watering || timerRunning || season !== false);
 
     const soilSeen = this._soilSeen();
     const soilGone = !!en.moisture && !this._ok("moisture");
@@ -751,7 +754,7 @@ class IrrigationCard extends HTMLElement {
 
     return {
       valveBad, valveOn, open, watering, timerRunning, paused: ts === "paused", remaining,
-      shortage, moisture, target, runTime, season, seasonKnown, stale, soilGone, soilSeen,
+      shortage, shortageRaw, moisture, target, runTime, season, seasonKnown, stale, soilGone, soilSeen,
       valveLow: valveBat !== null && valveBat < low, soilLow: soilBat !== null && soilBat < low,
       lastStart, lastEnd, runVolume, night, warnings, canWater,
       inWindow: this._inWindow(now),
@@ -931,7 +934,7 @@ class IrrigationCard extends HTMLElement {
 
     section("Valve");
     row("Valve", "valve", st.valveBad ? this._val("valve") : st.open ? "Open" : st.valveOn ? "On, closed" : "Closed");
-    row("Status", "valve_status", this._val("valve_status"), st.shortage);
+    row("Status", "valve_status", this._val("valve_status"), st.shortageRaw);
     row("Flow", "flow", this._val("flow"));
     row("Used today", "daily_volume", this._val("daily_volume"));
     row("Valve battery", "valve_battery", this._val("valve_battery"), st.valveLow);

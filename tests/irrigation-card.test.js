@@ -188,6 +188,21 @@ test("warnings: shortage, batteries, stale; first one plus a count in the name r
   assert.strictEqual(r.name, "Sensor battery 20 %");
 });
 
+test("water shortage out of season: no warning, no alert in the picture, still amber in the details", () => {
+  const c = render(states({ season: "off", status: "water_shortage" }));
+  const r = read(c);
+  assert(!r.warn, "the valve keeps water_shortage until its next run; in winter that is old news");
+  assert.strictEqual(r.name, "Garden irrigation");
+  assert(!/class="alert"/.test(r.scene) && !/f44336/.test(r.scene));
+  c._openDetails();
+  assert(c._el.dialog.querySelector('.row.warn[data-entity="sensor.watervalve_balcony_current_device_status"]'), "details still flag it");
+  // a manual run out of season (water_now: always) that hits a shortage does warn
+  const r2 = read(render(states({ season: "off", status: "water_shortage", timer: "active", timerAttrs: { finishes_at: iso(NOW + 5 * MIN) } }), { water_now: "always" }));
+  assert(r2.warn && r2.name.startsWith("Water shortage"));
+  // season on: warns (the next night's run would fail too)
+  assert(read(render(states({ season: "on", status: "water_shortage" }))).warn);
+});
+
 test("last_reported counts for staleness (values that do not change)", () => {
   const s = states({ soilSeen: NOW - 10 * H });
   s["sensor.soil_sensor_vegtable_garden_1_moisture"].last_reported = iso(NOW - 5 * MIN);

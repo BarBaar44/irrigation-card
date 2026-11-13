@@ -16,7 +16,7 @@ Made for a SONOFF Zigbee water valve (Zigbee2MQTT) and a Xiaomi Mi Flora plant s
 | Status line | `Season off · last 2 months ago`, `Tonight 03–06 if below 40 %`, `Waters tonight 03–06` (below the target), `Waters within 15 min` (below the target inside the window), `Watered 03:15 · 42 L` (for 12 hours after a run), `Soil 31 % · 18 L so far` (watering), `Valve closed` (timer running but the valve shut itself). Narrow cards get a shorter form |
 | Picture | Soil colour follows the moisture; plants turn a little yellow below the target; hose, drips and the tap lever while open; valve LED green, blue (open) or red (water shortage) with a warning mark; amber dot on the valve or sensor for a low battery or a silent sensor; moon at night; faded while the season is off |
 
-Warnings: `Water shortage` (valve status `water_shortage`), `Valve unavailable`, `Soil sensor unavailable`, `Soil sensor silent 7 h` (no update from any soil value for `stale_after` hours; BLE sensors drop out), `Valve battery 12 %` and `Sensor battery 7 %` (below `low_battery`).
+Warnings: `Water shortage` (valve status `water_shortage`, only while the season is on or while watering: the valve keeps that status until its next run, so out of season it is old news; the details pop-up still shows it), `Valve unavailable`, `Soil sensor unavailable`, `Soil sensor silent 7 h` (no update from any soil value for `stale_after` hours; BLE sensors drop out), `Valve battery 12 %` and `Sensor battery 7 %` (below `low_battery`).
 
 ## Using it
 
@@ -98,6 +98,7 @@ The `vegtable` in the soil sensor IDs is how the real entities are spelled. A fu
 | Last run from the valve's own start and end time | it also counts runs started by Water now or by hand; the input_datetime only has the automatic ones |
 | Stale from `last_reported` and every soil value | moisture can stay the same for hours; any update from the sensor means it is alive |
 | Own details pop-up | more-info shows one entity; the details need fifteen |
+| Water shortage hidden out of season | the valve reports `water_shortage` until its next run; over the winter that would be a warning for months about nothing |
 
 ## Development
 
