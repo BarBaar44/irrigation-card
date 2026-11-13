@@ -27,6 +27,7 @@ Marketplace (formerly HACS) dashboard card (Lovelace) for the garden watering on
 * Water now is disabled while the automation is off (`water_now: season`, the default): the automation is what closes the valve when the timer ends. Do not make it the default to allow it; `water_now: always` exists for setups where something else closes the valve.
 * Buttons only when they apply: Stop only while watering, the valve is open or the timer runs; Water now not while watering or unavailable; stepper ends disabled at the helper's min / max.
 * Steppers use the helper's own step, min and max; a pending value shows at once and builds on itself until HA confirms it (or 4 s pass).
+* Water shortage warns (name row, red LED and `!` in the picture) only while watering, the timer runs or the season is on (`shortage`); the details row uses the raw status (`shortageRaw`). The valve keeps `water_shortage` until its next run, so out of season it would warn all winter.
 * Warnings go in the name row (first one plus `· +n`), never in the status line: the soil battery warning can last weeks and must not hide the status.
 * Staleness uses `last_reported` (falls back to `last_updated` / `last_changed`) of every soil value: moisture can stay equal for hours.
 * Last run comes from the valve's start / end sensors (also manual runs), with the input_datetime as fallback.

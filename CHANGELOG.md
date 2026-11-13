@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.1.1
+
+- Water shortage only warns while the season is on or while watering. The valve keeps reporting `water_shortage` until its next run, so out of season the warning stayed for months. The details pop-up still shows the status in amber.
+
 ## v0.1.0
 
 First release.
