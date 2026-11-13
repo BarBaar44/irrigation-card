@@ -1,0 +1,47 @@
+# Minimal: the owner's own entities are the defaults.
+type: custom:irrigation-card
+grid_options:
+  columns: 12
+  rows: 3
+
+---
+# Full: every option with its default. null switches a part off.
+type: custom:irrigation-card
+name: Garden irrigation
+window_start: "03:00"
+window_end: "06:00"
+low_battery: 15
+stale_after: 6
+water_now: season
+entities:
+  valve: switch.watervalve_balcony
+  valve_open: binary_sensor.watervalve_balcony_valve_work_state
+  valve_status: sensor.watervalve_balcony_current_device_status
+  auto_close: switch.watervalve_balcony_auto_close_when_water_shortage
+  flow: sensor.watervalve_balcony_flow
+  run_duration: sensor.watervalve_balcony_real_time_irrigation_duration
+  run_volume: sensor.watervalve_balcony_real_time_irrigation_volume
+  daily_volume: sensor.watervalve_balcony_daily_irrigation_volume
+  run_start: sensor.watervalve_balcony_irrigation_start_time
+  run_end: sensor.watervalve_balcony_irrigation_end_time
+  valve_battery: sensor.watervalve_balcony_battery
+  moisture: sensor.soil_sensor_vegtable_garden_1_moisture
+  conductivity: sensor.soil_sensor_vegtable_garden_1_conductivity
+  soil_temperature: sensor.soil_sensor_vegtable_garden_1_temperature
+  illuminance: sensor.soil_sensor_vegtable_garden_1_illuminance
+  soil_battery: sensor.soil_sensor_vegtable_garden_1_battery
+  target: input_number.soil_balcony_value
+  run_time: input_number.watervalve_balcony_timer_value
+  timer: timer.watervalve_balcony
+  last_started: input_datetime.balconyvalvelaststarted
+  automation: automation.balcony_valve
+  sun: sun.sun
+hold_action:
+  action: more-info
+colors:
+  water: var(--blue-color, #2196f3)
+  "on": var(--green-color, #4caf50)
+  warn: var(--amber-color, #ffc107)
+grid_options:
+  columns: 12
+  rows: 3
